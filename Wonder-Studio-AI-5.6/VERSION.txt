@@ -1,0 +1,5 @@
+WONDER STUDIO AI
+Versión: 5.6
+Ediciones: Escritorio local (Windows) y Web (Vercel + Supabase)
+Fecha: 2026-11-17
+La interfaz rediseñada y exportación funcionan sin servicio de IA.

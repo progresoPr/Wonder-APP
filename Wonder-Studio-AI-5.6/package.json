@@ -1,0 +1,13 @@
+{
+  "name":"wonder-studio-ai",
+  "version":"5.6.0",
+  "private":true,
+  "type":"module",
+  "description":"Wonder Studio AI, web edition for Vercel and local desktop edition",
+  "scripts":{
+    "build":"node build-web.mjs",
+    "dev":"node build-web.mjs && npx serve dist -l 3000",
+    "test":"python -m unittest discover -s tests -v"
+  },
+  "engines":{"node":">=18"}
+}

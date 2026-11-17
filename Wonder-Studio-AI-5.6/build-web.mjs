@@ -1,0 +1,10 @@
+import fs from 'node:fs';import path from 'node:path';
+const here=process.cwd(),src=path.join(here,'web'),out=path.join(here,'dist');
+fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
+for(const n of ['index.html','style.css','ui56.css','ui56.js','export-ui56.js','zip56.js','favicon.svg','auth.js','storage.js','app.js'])fs.copyFileSync(path.join(src,n),path.join(out,n));
+const url=process.env.SUPABASE_URL||'',anonKey=process.env.SUPABASE_ANON_KEY||'';
+if(url && !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(url))throw Error('SUPABASE_URL debe ser una URL https de proyecto Supabase');
+if(/service.role|service_role|sb_secret_/i.test(anonKey))throw Error('No uses claves secretas ni service_role en el frontend.');
+const config=`export const CLOUD_CONFIG=${JSON.stringify({url,anonKey})};\n`;
+fs.writeFileSync(path.join(out,'config.js'),config);
+console.log(`Wonder Studio AI Web 5.6 compilado a dist/ · configuración Supabase: ${url&&anonKey?'presente':'PENDIENTE'}`);

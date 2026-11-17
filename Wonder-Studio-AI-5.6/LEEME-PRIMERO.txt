@@ -1,0 +1,20 @@
+WONDER STUDIO AI 5.6 — DOS EDICIONES
+
+1. ESCRITORIO (WINDOWS)
+   a) Extrae este ZIP completo.
+   b) Ejecuta INSTALAR-WONDER-WINDOWS.bat (se recomienda).
+   c) Abre el acceso directo de Wonder Studio AI o WonderStudioAI-5.6-Windows.exe.
+   d) Este ejecutable necesita Python 3.11+ instalado. La instalacion puede ayudarte a conseguirlo.
+   e) No elimines %%LOCALAPPDATA%%\WonderStudioAI\data; conserva respaldo de tus proyectos.
+   f) La creacion de imagenes por IA necesita configurar Ollama/ComfyUI y sus modelos.
+
+2. WEB (GITHUB + VERCEL)
+   a) Lee PUBLICAR-EN-VERCEL.md.
+   b) Sube el codigo a un repositorio de GitHub, SIN data/ ni .env.
+   c) Crea un proyecto Supabase y ejecuta supabase/schema.sql.
+   d) En Vercel configura SUPABASE_URL y SUPABASE_ANON_KEY y publica.
+   e) La version web no incluye una API remota de generacion de imagenes.
+
+NO ELIMINES TU INSTALACION ANTERIOR ANTES DE RESPALDAR LOS PROYECTOS.
+
+README.md contiene los detalles.

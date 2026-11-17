@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wonder Studio AI</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2e;--panel2:#18233b;--line:#263451;--text:#edf3ff;--muted:#9aa9c4;--blue:#6d8cff;--cyan:#55d6e8;--pink:#d78cff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,Segoe UI,Arial}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:9px 13px;background:#202d49;color:var(--text)}button.primary{background:linear-gradient(120deg,#5578ff,#8a68ef);border:0;font-weight:700}button.ghost{background:transparent}button.danger{color:#ff9caa}
+.top{height:64px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#0e1527;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}.logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#6c8cff,#bd72ff);display:grid;place-items:center}
+.top small{color:var(--muted)}.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 64px)}
+.sidebar{border-right:1px solid var(--line);padding:18px 13px;background:#0e1527}.navlabel{font-size:10px;letter-spacing:1.5px;color:#71819f;margin:18px 10px 8px}.nav{width:100%;text-align:left;background:transparent;border:0;color:#b8c5dc;margin:3px 0}.nav.active,.nav:hover{background:#1c2944;color:white}.sidefoot{position:sticky;top:calc(100vh - 100px);margin-top:40px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px}
+main{padding:26px;max-width:1500px;width:100%;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}.head h1{margin:0;font-size:25px}.sub{color:var(--muted);margin-top:6px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}.project{min-height:170px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 85% 10%,#30416b 0,transparent 40%),var(--panel)}.project h3{margin:12px 0 5px}.project p{color:var(--muted);margin:0;font-size:12px}.project-actions{display:flex;gap:7px;margin-top:18px}.pill{font-size:11px;padding:5px 8px;border-radius:20px;background:#263657;color:#c9d7ff;display:inline-block}
+input,select,textarea{background:#0d1527;border:1px solid var(--line);border-radius:9px;padding:10px;color:var(--text);width:100%;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}label{display:block;color:#aebbd1;font-size:12px;margin:12px 0 6px}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.hidden{display:none!important}
+.workspace{display:grid;grid-template-columns:minmax(260px,340px) minmax(350px,1fr) 260px;gap:14px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.panelhead{padding:13px 15px;border-bottom:1px solid var(--line);font-weight:700;display:flex;justify-content:space-between}.panelbody{padding:14px}.chatlog{height:360px;overflow:auto;display:flex;flex-direction:column;gap:10px}.bubble{max-width:94%;padding:10px 12px;border-radius:12px;background:#202d49;color:#e4ebfa;line-height:1.5}.bubble.user{align-self:flex-end;background:#4059a0}.bubble.assistant{align-self:flex-start}.chatinput{display:flex;gap:7px;margin-top:12px}.chatinput input{flex:1}.assetgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.asset{background:#0c1425;border:1px solid var(--line);border-radius:9px;padding:7px;min-width:0}.asset img{width:100%;height:76px;object-fit:contain;background:#1a2540;border-radius:6px}.asset small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);margin-top:5px}
+.canvaswrap{background:#080d18;border:1px dashed #3b4a68;border-radius:12px;min-height:520px;display:grid;place-items:center;padding:20px;overflow:hidden}.artboard{position:relative;width:min(100%,560px);aspect-ratio:1/1;background:linear-gradient(145deg,#dceeff,#83b7ee);overflow:hidden;box-shadow:0 15px 55px #0008;color:#12213c}.artboard img{position:absolute;max-width:90%;max-height:80%;object-fit:contain;left:5%;top:10%;pointer-events:none}.arttext{position:absolute;left:8%;top:65%;font-weight:900;font-size:34px;line-height:1.05;max-width:84%;cursor:move;white-space:pre-wrap;outline:none}.arttext.selected{outline:1px dashed #527cff;outline-offset:5px}.layer{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid var(--line);border-radius:8px;margin-bottom:7px;background:#0e172a}.layer.active{border-color:var(--blue);background:#1c2b4a}.layer span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hint{font-size:11px;color:var(--muted);line-height:1.5}.section{margin:0 0 14px}.section h2{font-size:16px;margin:0 0 6px}.empty{padding:38px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+@media(max-width:1050px){.workspace{grid-template-columns:1fr 1fr}.workspace .editorpanel{grid-column:1/-1;grid-row:1}.workspace .rightpanel{grid-column:2}.workspace .leftpanel{grid-column:1}}@media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{display:flex;gap:5px;overflow:auto;padding:8px}.navlabel,.sidefoot{display:none}.nav{white-space:nowrap;width:auto}.layout main{padding:15px}.workspace{grid-template-columns:1fr}.workspace .editorpanel,.workspace .rightpanel,.workspace .leftpanel{grid-column:1;grid-row:auto}.top{padding:0 12px}}
+
+.artshape{position:absolute;width:150px;height:90px;left:25%;top:25%;background:#5578ff;border-radius:14px;cursor:move}
+.arttext,.artshape,.artboard img{user-select:none}
+.arttext[contenteditable=true]{user-select:text}
+.artshape.selected,.artboard img.selected{outline:2px dashed #527cff;outline-offset:4px}
+#opacity{padding:0}
+@media(max-width:700px){.row{flex-wrap:wrap}}
+
+.palette{display:flex;gap:6px;margin:8px 0}.swatch{width:23px;height:23px;border-radius:6px;border:1px solid #ffffff44;display:inline-block}
+.assetthumb{width:100%;height:135px;object-fit:contain;background:#0b1425;border-radius:9px}
+.assetmeta{font-size:11px;color:#a8b6cf;line-height:1.6}.tag{display:inline-block;background:#253451;color:#d6e1ff;border-radius:20px;padding:3px 7px;font-size:10px;margin:2px}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><div class="logo">✦</div> Wonder Studio <span style="color:#8d9dff">AI</span></div><small>ESTUDIO CREATIVO · PROTOTIPO</small></header>
+<div class="layout">
+<aside class="sidebar">
+<div class="navlabel">ESPACIO DE TRABAJO</div>
+<button class="nav active" data-page="projects">▦ &nbsp; Mis proyectos</button>
+<button class="nav" data-page="studio">✧ &nbsp; Estudio creativo</button>
+<button class="nav" data-page="library">▧ &nbsp; Biblioteca de recursos</button>
+<div class="navlabel">CUENTA</div><button class="nav" data-page="settings">⚙ &nbsp; Configuración</button>
+<div class="sidefoot">✦ <b>Tu estudio creativo</b><br><br>Los archivos se guardan localmente en este navegador en esta versión de demostración.</div>
+</aside>
+<main>
+<section id="projectsPage">
+<div class="head"><div><h1>Mis proyectos</h1><div class="sub">Cada proyecto tiene su propia identidad visual y biblioteca de recursos.</div></div><button class="primary" id="newProject">＋ Nuevo proyecto</button></div>
+<div id="projectGrid" class="grid"></div>
+</section>
+<section id="studioPage" class="hidden">
+<div class="head"><div><h1>Estudio creativo</h1><div class="sub" id="studioSubtitle">Conversa con tu directora de arte y prepara tu diseño.</div></div><button class="ghost" id="backProjects">← Proyectos</button></div>
+<div class="workspace">
+<div class="panel leftpanel"><div class="panelhead">✧ Asistente creativo <select id="aiPersonality" style="width:145px;padding:5px"><option value="both">Directora + técnica</option><option value="art">Directora de arte</option><option value="tech">Diseñadora técnica</option></select></div><div class="panelbody"><div id="chatlog" class="chatlog"></div><div class="chatinput"><input id="chatInput" placeholder="Describe lo que tienes en mente..."><button class="primary" id="sendChat">Enviar</button></div><p class="hint">La IA debe confirmar el proyecto, formato, objetivo, texto y estilo antes de generar. La conversación de esta demo es guiada; la conexión con un modelo real requiere configurar una API.</p></div></div>
+<div class="panel editorpanel"><div class="panelhead">Lienzo de diseño <div class="row" style="max-width:180px"><select id="canvasRatio"><option value="1/1">Cuadrado · 1:1</option><option value="4/5">Retrato · 4:5</option><option value="16/9">Horizontal · 16:9</option><option value="9/16">Historia · 9:16</option></select></div></div><div class="panelbody"><div class="canvaswrap"><div class="artboard" id="artboard"><div id="artTitle" class="arttext" contenteditable="true">TU GRAN IDEA<br>COMIENZA AQUÍ</div></div></div><div class="row" style="margin-top:12px;flex-wrap:wrap"><button id="addText">＋ Texto</button><button id="addShape">＋ Forma</button><button id="saveDesign" class="primary">Guardar diseño</button><button id="exportDesign">Exportar PNG</button></div>
+<div class="hint" style="margin-top:8px">Consejo: arrastra los elementos dentro del lienzo para acomodarlos. Selecciona una capa para editar sus propiedades.</div></div></div>
+<div class="panel rightpanel"><div class="panelhead">Capas y propiedades</div><div class="panelbody"><div id="layers"><div class="layer active"><span>▤ Título principal</span></div></div><div class="section"><label>Texto seleccionado</label><textarea id="textValue" rows="2">TU GRAN IDEA&#10;COMIENZA AQUÍ</textarea><div class="row"><div><label>Tamaño</label><input id="fontSize" type="number" value="34" min="8" max="150"></div><div><label>Color</label><input id="textColor" type="color" value="#12213c" style="height:38px;padding:3px"></div></div><label>Tipografía</label><select id="fontFamily"><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Trebuchet MS</option><option>Impact</option></select></div><div class="section"><label>Fondo del lienzo</label><input id="bgColor" type="color" value="#dceeff" style="height:38px;padding:3px">
+<label>Opacidad del elemento</label><input id="opacity" type="range" min="10" max="100" value="100">
+<label>Sombra</label><select id="shadow"><option value="none">Sin sombra</option><option value="0 4px 12px #0005">Suave</option><option value="0 8px 24px #0008">Marcada</option></select>
+<label>Orden de capa</label><div class="row"><button id="layerUp">↑ Adelante</button><button id="layerDown">↓ Atrás</button></div>
+<label>Recursos del proyecto</label><div id="studioAssets" class="assetgrid"></div><p class="hint">Selecciona un recurso para colocarlo en el lienzo.</p></div></div></div>
+</div>
+</section>
+<section id="libraryPage" class="hidden">
+<div class="head"><div><h1>Biblioteca de recursos</h1><div class="sub">Sube logotipos, imágenes, fondos, personajes y tipografías por proyecto.</div></div><button class="primary" id="uploadAssets">＋ Subir archivos</button><input id="fileInput" type="file" accept="image/*,.svg,.woff,.woff2,.ttf,.otf" multiple class="hidden"></div>
+<div class="card" style="margin-bottom:15px"><div class="row"><div><label>Proyecto</label><select id="libraryProject"></select></div><div><label>Tipo de recurso</label><select id="assetType"><option>General</option><option>Logotipo</option><option>Personaje</option><option>Fondo</option><option>Elemento</option><option>Tipografía</option></select></div></div><label>Memoria visual híbrida</label><div class="hint">La IA organiza automáticamente los archivos y deja en revisión las decisiones que afectan a la identidad de marca.</div>
+<div class="row" style="margin-top:10px"><input id="assetSearch" placeholder="Buscar recursos..."><select id="assetFilter"><option value="all">Todas las categorías</option><option>Logotipo</option><option>Personaje</option><option>Fondo</option><option>Elemento</option><option>General</option></select></div></div>
+<div class="card" id="memorySummary" style="margin-bottom:14px"></div>
+<div class="card" style="margin-bottom:14px"><div class="row"><div><b>Revisión de sugerencias</b><div class="hint">Confirma o corrige las clasificaciones sugeridas por el sistema.</div></div><span class="pill" id="pendingCount">0 pendientes</span></div><div id="reviewQueue" class="grid" style="margin-top:12px"></div></div>
+<div id="assetList" class="grid"></div>
+</section>
+<section id="settingsPage" class="hidden">
+<div class="head"><div><h1>Configuración</h1><div class="sub">Preferencias del estudio y conexiones.</div></div></div>
+<div class="card" style="max-width:720px"><h3>Conexión de inteligencia artificial</h3><p class="hint">Para activar generación real de imágenes y conversación inteligente, conecta un backend seguro con un proveedor de IA. No guardes claves API en el navegador.</p><label>Endpoint de tu backend</label><input placeholder="https://tu-servidor.com/api"><label>Estado</label><p><span class="pill">Pendiente de configurar</span></p><hr style="border-color:var(--line)"><h3>Almacenamiento</h3><p class="hint">Esta versión guarda proyectos y recursos en el navegador. Para una versión multiusuario o nube se necesita una base de datos y almacenamiento de archivos.</p></div>
+</section>
+</main></div>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let projects=JSON.parse(localStorage.getItem('wsa_projects')||'[]'), assets=JSON.parse(localStorage.getItem('wsa_assets')||'[]'), designs=JSON.parse(localStorage.getItem('wsa_designs')||'[]');
+let current=null, chatStep=0, selectedText=$('#artTitle'), uploadedType='General';
+const persist=()=>{localStorage.setItem('wsa_projects',JSON.stringify(projects));localStorage.setItem('wsa_assets',JSON.stringify(assets));localStorage.setItem('wsa_designs',JSON.stringify(designs))};
+function page(p){['projects','studio','library','settings'].forEach(x=>$('#'+x+'Page').classList.toggle('hidden',x!==p));$$('.nav').forEach(b=>b.classList.toggle('active',b.dataset.page===p));if(p==='projects')renderProjects();if(p==='library')renderLibrary()}
+$$('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));
+function renderProjects(){let g=$('#projectGrid');g.innerHTML='';if(!projects.length)g.innerHTML='<div class="empty">Aún no tienes proyectos.<br><br>Crea tu primer espacio de marca para comenzar.</div>';projects.forEach(p=>{let n=assets.filter(a=>a.project===p.id).length;let d=document.createElement('div');d.className='card project';d.innerHTML=`<div><span class="pill">PROYECTO</span><h3>${esc(p.name)}</h3><p>${esc(p.description||'Identidad visual y recursos creativos')}</p></div><div><p>${n} recursos · creado ${new Date(p.created).toLocaleDateString()}</p><div class="project-actions"><button class="primary open">Abrir estudio</button><button class="edit">Editar</button><button class="danger del">Eliminar</button></div></div>`;d.querySelector('.open').onclick=()=>openStudio(p.id);d.querySelector('.edit').onclick=()=>renameProject(p.id);d.querySelector('.del').onclick=()=>deleteProject(p.id);g.append(d)})}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('#newProject').onclick=()=>{let name=prompt('Nombre del proyecto:');if(!name?.trim())return;projects.push({id:crypto.randomUUID(),name:name.trim(),description:'',created:Date.now(),logo:null});persist();renderProjects()};
+function renameProject(id){let p=projects.find(x=>x.id===id),n=prompt('Nuevo nombre:',p.name);if(n?.trim()){p.name=n.trim();persist();renderProjects()}}
+function deleteProject(id){if(!confirm('¿Eliminar el proyecto y todos sus recursos?'))return;projects=projects.filter(p=>p.id!==id);assets=assets.filter(a=>a.project!==id);designs=designs.filter(d=>d.project!==id);persist();renderProjects()}
+function openStudio(id){current=projects.find(p=>p.id===id);if(!current)return;$('#studioSubtitle').textContent='Proyecto: '+current.name+' · Conversa y crea con sus recursos.';page('studio');$('#artboard').style.background='#dceeff';$('#artboard').innerHTML='<div id="artTitle" class="arttext" contenteditable="true">TU GRAN IDEA<br>COMIENZA AQUÍ</div>';selectedText=$('#artTitle');bindText();chatStep=0;$('#chatlog').innerHTML='';bot(`¡Hola! Soy tu directora de arte para ${current.name}. Antes de diseñar, quiero entender bien lo que necesitas. ¿Qué pieza vamos a crear y cuál es su objetivo?`);renderStudioAssets()}
+function bot(t){let d=document.createElement('div');d.className='bubble assistant';d.textContent=t;$('#chatlog').append(d);$('#chatlog').scrollTop=99999}
+function user(t){let d=document.createElement('div');d.className='bubble user';d.textContent=t;$('#chatlog').append(d);$('#chatlog').scrollTop=99999}
+const prompts=['¿Qué tamaño o formato necesitas? Por ejemplo: 1080×1080 px, historia 1080×1920 o portada horizontal.','¿Qué texto debe aparecer exactamente en el diseño?','¿Qué estilo visual buscas y qué sensación debe transmitir?','¿Hay colores, elementos o recursos de la biblioteca que debamos priorizar?','Perfecto. Ya tenemos un brief inicial. En una versión conectada a IA, ahora analizaría los recursos y generaría propuestas. ¿Quieres ajustar algo del brief antes de continuar?'];
+function send(){let v=$('#chatInput').value.trim();if(!v)return;$('#chatInput').value='';user(v);
+ let mode=$('#aiPersonality').value;
+ if(mode==='art')bot('Como directora de arte: '+(chatStep===0?'Me interesa primero la intención y la emoción que debe transmitir. ': 'Visualmente podemos darle más personalidad sin perder claridad. ')+prompts[Math.min(chatStep,prompts.length-1)]);
+ else if(mode==='tech')bot('Desde el lado técnico: '+(chatStep===0?'Definamos primero el objetivo de comunicación y los entregables. ':'Voy a registrar ese requisito en el brief. ')+prompts[Math.min(chatStep,prompts.length-1)]);
+ else bot((chatStep%2===0?'Como directora de arte, quiero cuidar la intención visual. ':'Como diseñadora técnica, voy a precisar los detalles de producción. ')+prompts[Math.min(chatStep,prompts.length-1)]);
+ chatStep=Math.min(chatStep+1,prompts.length);
+}$('#sendChat').onclick=send;$('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+function renderStudioAssets(){let el=$('#studioAssets');el.innerHTML='';assets.filter(a=>a.project===current.id&&a.kind!=='Tipografía').slice(0,8).forEach(a=>{let d=document.createElement('div');d.className='asset';d.innerHTML=`<img src="${a.data}"><small>${esc(a.name)}</small>`;d.onclick=()=>addImage(a.data);el.append(d)});if(!el.children.length)el.innerHTML='<p class="hint">Todavía no hay imágenes. Sube recursos en Biblioteca.</p>'}
+function bindText(){
+ if(!selectedText)return;
+ selectedText.onclick=()=>selectElement(selectedText);
+ selectedText.classList.add('selected'); makeDraggable(selectedText);
+}
+function selectElement(el){
+ $$('.arttext,.artshape,.artboard img').forEach(x=>x.classList.remove('selected'));
+ el.classList.add('selected'); window.activeElement=el;
+ if(el.classList.contains('arttext')){
+   selectedText=el; $('#textValue').value=el.innerText;
+   $('#fontSize').value=parseInt(getComputedStyle(el).fontSize)||34;
+   $('#textColor').value=rgbToHex(getComputedStyle(el).color);
+   $('#fontFamily').value=getComputedStyle(el).fontFamily.split(',')[0].replaceAll('"','');
+ } else { selectedText=null; }
+ $('#opacity').value=Math.round((parseFloat(el.style.opacity||1))*100);
+ $('#shadow').value=el.style.boxShadow||'none';
+ renderLayers();
+}
+function makeDraggable(el){
+ if(el.dataset.dragReady)return;el.dataset.dragReady='1';
+ el.addEventListener('pointerdown',e=>{
+  if(e.target.isContentEditable && e.detail>1)return;
+  if(el.tagName==='DIV' || el.tagName==='IMG'){selectElement(el);let board=$('#artboard').getBoundingClientRect(),r=el.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,ox=r.left-board.left,oy=r.top-board.top;
+   el.setPointerCapture(e.pointerId);
+   const move=ev=>{el.style.left=Math.max(0,Math.min(95,((ox+ev.clientX-sx)/board.width)*100))+'%';el.style.top=Math.max(0,Math.min(95,((oy+ev.clientY-sy)/board.height)*100))+'%';};
+   const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up)};
+   el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);
+  }
+ });
+}
+function syncText(){if(!selectedText)return;selectedText.innerText=$('#textValue').value;selectedText.style.fontSize=$('#fontSize').value+'px';selectedText.style.color=$('#textColor').value;selectedText.style.fontFamily=$('#fontFamily').value}
+['textValue','fontSize','textColor','fontFamily'].forEach(id=>$('#'+id).addEventListener('input',syncText));
+$('#bgColor').oninput=e=>$('#artboard').style.background=e.target.value;
+$('#canvasRatio').onchange=e=>$('#artboard').style.aspectRatio=e.target.value;
+$('#addText').onclick=()=>{let t=document.createElement('div');t.className='arttext';t.contentEditable=true;t.textContent='Nuevo texto';t.style.top=(20+Math.random()*50)+'%';t.style.left='8%';$('#artboard').append(t);selectedText=t;bindText();selectElement(t);$('#textValue').value=t.innerText;renderLayers()};
+$('#addShape').onclick=()=>{let sh=document.createElement('div');sh.className='artshape';$('#artboard').append(sh);makeDraggable(sh);selectElement(sh);renderLayers()};
+$('#opacity').oninput=e=>{if(window.activeElement)window.activeElement.style.opacity=e.target.value/100};
+$('#shadow').onchange=e=>{if(window.activeElement)window.activeElement.style.boxShadow=e.target.value==='none'?'none':e.target.value};
+$('#layerUp').onclick=()=>{let el=window.activeElement;if(el&&el.nextElementSibling)el.parentNode.insertBefore(el.nextElementSibling,el);renderLayers()};
+$('#layerDown').onclick=()=>{let el=window.activeElement;if(el&&el.previousElementSibling)el.parentNode.insertBefore(el,el.previousElementSibling);renderLayers()};
+function addImage(src){let im=document.createElement('img');im.src=src;im.style.top='8%';im.style.left='8%';im.style.maxHeight='52%';$('#artboard').append(im);makeDraggable(im);selectElement(im);renderLayers()}
+function renderLayers(){let l=$('#layers');l.innerHTML='';[...$('#artboard').children].reverse().forEach((el)=>{let d=document.createElement('div');d.className='layer'+(el===window.activeElement?' active':'');let title=el.tagName==='IMG'?'Imagen':el.classList.contains('artshape')?'Forma':(el.innerText||'Texto').slice(0,24);d.innerHTML=`<span>${el.tagName==='IMG'?'▧':el.classList.contains('artshape')?'◧':'▤'} ${esc(title)}</span><button title="Eliminar">×</button>`;d.querySelector('span').onclick=()=>selectElement(el);d.querySelector('button').onclick=()=>{el.remove();if(el===window.activeElement)window.activeElement=null;renderLayers()};l.append(d)})}
+function rgbToHex(rgb){let m=rgb.match(/\d+/g);return m?'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join(''):'#12213c'}
+$('#backProjects').onclick=()=>page('projects');
+$('#saveDesign').onclick=()=>{if(!current)return;designs.push({id:crypto.randomUUID(),project:current.id,name:'Diseño '+(designs.filter(d=>d.project===current.id).length+1),html:$('#artboard').innerHTML,bg:$('#artboard').style.background,ratio:$('#artboard').style.aspectRatio,created:Date.now()});persist();alert('Diseño guardado en este navegador.')};
+$('#exportDesign').onclick=async()=>{
+ const board=$('#artboard'),rect=board.getBoundingClientRect(),scale=2,canvas=document.createElement('canvas');
+ canvas.width=rect.width*scale;canvas.height=rect.height*scale;let ctx=canvas.getContext('2d');ctx.scale(scale,scale);
+ ctx.fillStyle=getComputedStyle(board).backgroundColor;ctx.fillRect(0,0,rect.width,rect.height);
+ for(const el of board.children){
+  const r=el.getBoundingClientRect(),x=r.left-rect.left,y=r.top-rect.top;
+  ctx.save();ctx.globalAlpha=parseFloat(el.style.opacity||1);
+  if(el.tagName==='IMG'){try{await new Promise((res,rej)=>{if(el.complete)res();else{el.onload=res;el.onerror=rej}});ctx.drawImage(el,x,y,r.width,r.height)}catch(e){}}
+  else if(el.classList.contains('artshape')){ctx.fillStyle=getComputedStyle(el).backgroundColor;ctx.beginPath();ctx.roundRect(x,y,r.width,r.height,12);ctx.fill()}
+  else {const cs=getComputedStyle(el);ctx.fillStyle=cs.color;ctx.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;ctx.textBaseline='top';let lines=el.innerText.split('\n'),lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.15;lines.forEach((line,i)=>ctx.fillText(line,x,y+i*lh))}
+  ctx.restore();
+ }
+ let a=document.createElement('a');a.download=(current?.name||'wonder-studio')+'-diseno.png';a.href=canvas.toDataURL('image/png');a.click();
+};
+$('#uploadAssets').onclick=()=>$('#fileInput').click();
+function autoCategory(name,chosen,meta){
+ if(chosen!=='General')return chosen;
+ let n=name.toLowerCase();
+ if(/logo|logotipo|marca|brand|isotipo/.test(n))return 'Logotipo';
+ if(/personaje|character|mascota|penguin|avatar/.test(n))return 'Personaje';
+ if(/fondo|background|wallpaper|texture/.test(n))return 'Fondo';
+ if(/icon|element|sticker|item|objeto/.test(n))return 'Elemento';
+ return 'General';
+}
+function readImage(file){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+function inspectVisual(data){return new Promise(resolve=>{let im=new Image();im.onload=()=>{
+ let palette=[];try{let c=document.createElement('canvas');c.width=40;c.height=40;let x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,40,40);let d=x.getImageData(0,0,40,40).data,counts={};for(let i=0;i<d.length;i+=16){if(d[i+3]<100)continue;let vals=[d[i],d[i+1],d[i+2]].map(v=>Math.min(255,Math.round(v/32)*32));let h='#'+vals.map(v=>v.toString(16).padStart(2,'0')).join('');counts[h]=(counts[h]||0)+1}palette=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5).map(v=>v[0])}catch(e){}
+ resolve({width:im.naturalWidth,height:im.naturalHeight,ratio:im.naturalWidth/im.naturalHeight,palette})};im.onerror=()=>resolve({width:0,height:0,ratio:0,palette:[]});im.src=data})}
+$('#fileInput').onchange=async e=>{
+ let pid=$('#libraryProject').value;if(!pid){alert('Primero crea un proyecto.');return}
+ for(let f of e.target.files){if(!f.type.startsWith('image/'))continue;let data=await readImage(f),meta=await inspectVisual(data),suggestedKind=autoCategory(f.name,$('#assetType').value,meta);
+ let tags=[];if(meta.ratio>2)tags.push('horizontal');else if(meta.ratio<.7)tags.push('vertical');else if(meta.ratio>.9&&meta.ratio<1.1)tags.push('cuadrado');if(meta.width>=1500||meta.height>=1500)tags.push('alta resolución');
+ assets.push({id:crypto.randomUUID(),project:pid,name:f.name,kind:suggestedKind,suggestedKind,data,meta,tags,logo:false,reviewStatus:'pending',created:Date.now()});
+ }
+ persist();renderLibrary();e.target.value='';
+};
+function renderLibrary(){
+ let sel=$('#libraryProject'),old=sel.value;sel.innerHTML=projects.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+ if(!projects.length)sel.innerHTML='<option value="">Crea primero un proyecto</option>';if(projects.some(p=>p.id===old))sel.value=old;
+ let id=sel.value||projects[0]?.id,all=assets.filter(a=>a.project===id),pending=all.filter(a=>a.reviewStatus==='pending'),approved=all.filter(a=>a.reviewStatus==='approved');
+ $('#pendingCount').textContent=pending.length+' pendientes';
+ let project=projects.find(p=>p.id===id),logo=all.find(a=>a.logo);
+ let colors=[];all.forEach(a=>(a.meta?.palette||[]).forEach(c=>{if(!colors.includes(c))colors.push(c)}));
+ $('#memorySummary').innerHTML=`<div class="row"><div><span class="pill">MEMORIA VISUAL · MODO HÍBRIDO</span><h3 style="margin:7px 0">${esc(project?.name||'Proyecto')}</h3><div class="hint">${all.length} recursos · ${approved.length} revisados · ${pending.length} por revisar</div></div>${logo?`<img src="${logo.data}" style="width:64px;height:64px;object-fit:contain;background:#0b1425;border-radius:9px">`:'<span class="pill">Logo sin confirmar</span>'}</div><label>Paleta detectada</label><div class="palette">${colors.slice(0,8).map(c=>`<span class="swatch" title="${c}" style="background:${c}"></span>`).join('')||'<span class="hint">Aún no hay colores detectados.</span>'}</div><div class="hint">Los colores se extraen de los píxeles de tus imágenes. La elección del logo y los cambios de identidad requieren tu confirmación.</div>`;
+ let queue=$('#reviewQueue');queue.innerHTML='';
+ pending.forEach(a=>{let d=document.createElement('div');d.className='asset';d.innerHTML=`<img class="assetthumb" src="${a.data}"><b>${esc(a.name)}</b><div class="hint">Sugerencia: ${esc(a.suggestedKind||a.kind)} · ${a.meta?.width||'?'}×${a.meta?.height||'?'} px</div><label>Confirmar categoría</label><select class="reviewKind"><option>General</option><option>Logotipo</option><option>Personaje</option><option>Fondo</option><option>Elemento</option></select><div class="row" style="margin-top:8px"><button class="primary approve">Aprobar</button><button class="reject">Corregir luego</button></div>`;d.querySelector('.reviewKind').value=a.suggestedKind||a.kind;d.querySelector('.approve').onclick=()=>{a.kind=d.querySelector('.reviewKind').value;a.reviewStatus='approved';persist();renderLibrary()};d.querySelector('.reject').onclick=()=>{a.reviewStatus='needs_review';persist();renderLibrary()};queue.append(d)});
+ if(!pending.length)queue.innerHTML='<div class="hint">No tienes sugerencias pendientes. Las nuevas cargas aparecerán aquí para revisión.</div>';
+ let q=($('#assetSearch')?.value||'').toLowerCase(),filter=$('#assetFilter')?.value||'all',list=$('#assetList');list.innerHTML='';
+ all.filter(a=>(filter==='all'||a.kind===filter)&&(!q||[a.name,a.kind,...(a.tags||[])].join(' ').toLowerCase().includes(q))).forEach(a=>{
+ let d=document.createElement('div');d.className='card';let sw=(a.meta?.palette||[]).slice(0,5).map(c=>`<span class="swatch" title="${c}" style="background:${c}"></span>`).join('');
+ d.innerHTML=`<img class="assetthumb" src="${a.data}"><h3 style="font-size:14px">${esc(a.name)}</h3><div class="assetmeta">${esc(a.kind)} ${a.logo?'· ★ LOGO PRINCIPAL':''}<br>${a.meta?.width||'?'} × ${a.meta?.height||'?'} px · ${a.reviewStatus==='approved'?'Revisado':'Pendiente'}</div><div class="palette">${sw}</div><label>Categoría</label><select class="kind"><option>General</option><option>Logotipo</option><option>Personaje</option><option>Fondo</option><option>Elemento</option></select><div class="row" style="margin-top:8px"><button class="logo">${a.logo?'★ Logo oficial':'☆ Proponer como logo'}</button><button class="danger del">Eliminar</button></div>`;
+ d.querySelector('.kind').value=a.kind;d.querySelector('.kind').onchange=e=>{let v=e.target.value;if(v==='Logotipo'&&a.kind!=='Logotipo'&&!confirm('¿Confirmas que este archivo es un logotipo?')){e.target.value=a.kind;return}a.kind=v;a.reviewStatus='approved';persist();renderLibrary()};
+ d.querySelector('.logo').onclick=()=>{if(!confirm('¿Confirmas este archivo como logotipo principal del proyecto? Esta decisión actualiza la identidad visual.'))return;all.forEach(x=>x.logo=false);a.logo=true;project.logo=a.id;a.kind='Logotipo';a.reviewStatus='approved';persist();renderLibrary()};
+ d.querySelector('.del').onclick=()=>{if(!confirm('¿Eliminar este recurso?'))return;assets=assets.filter(x=>x.id!==a.id);persist();renderLibrary()};list.append(d)
+ });
+ if(!list.children.length)list.innerHTML='<div class="empty">No hay recursos que coincidan con esta búsqueda.</div>';
+}
+$('#libraryProject').onchange=renderLibrary;
+$('#assetSearch').oninput=renderLibrary;$('#assetFilter').onchange=renderLibrary;
+$('#textValue').value=selectedText?.innerText||'';
+renderProjects();
+</script>
+</body></html>
